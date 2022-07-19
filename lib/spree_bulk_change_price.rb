@@ -1,0 +1,6 @@
+require 'spree_core'
+require 'spree_api'
+require 'spree_backend'
+require 'spree_extension'
+require 'spree_bulk_change_price/engine'
+require 'spree_bulk_change_price/version'
