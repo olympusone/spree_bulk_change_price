@@ -1,0 +1,66 @@
+<div class="form-group">
+  <div class="row">
+    <div class="col-lg-3 text-lg-right font-weight-bold">
+      <%= f.label :bulk_action, Spree.t('bulk_change_price_form.bulk_action') %>:
+    </div>
+    <div class="col-lg-9 checkbox-options">
+      <%= f.collection_radio_buttons :bulk_action, bulk_change_price_bulk_actions, :first, :last, {checked: :change_price} %>
+    </div>
+  </div>
+</div>
+<div class="form-group">
+  <div class="row">
+    <div class="col-lg-3 text-lg-right font-weight-bold">
+      <%= f.label :products, Spree.t('bulk_change_price_form.products') %>:
+    </div>
+    <div class="col-lg-9">
+      <div class="checkbox-options">
+        <%= f.collection_radio_buttons :products, bulk_change_price_products, :first, :last, {checked: :all} %>
+      </div>
+      <div class="bulk_change_price_taxons mt-3" style="display: none;">
+        <%= f.select :taxon_ids, [], { include_hidden: false },
+                                    multiple: true,
+                                    data: { autocomplete_url_value: 'taxons_api_v2',
+                                            autocomplete_return_attr_value: 'pretty_name',
+                                            autocomplete_multiple_value: true } %>
+      </div>
+      <div class="bulk_change_price_products mt-3" style="display: none;">
+        <%= f.select :product_ids, [], { include_hidden: false },
+                                        multiple: true,
+                                        data: { autocomplete_url_value: 'products_api_v2',
+                                            autocomplete_return_attr_value: 'name',
+                                            autocomplete_multiple_value: true } %>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="form-group">
+  <div class="row">
+    <div class="col-lg-3 text-lg-right font-weight-bold">
+      <%= f.label :update_type, Spree.t('bulk_change_price_form.update_type') %>:
+    </div>
+    <div class="col-lg-9 checkbox-options">
+      <%= f.collection_radio_buttons :update_type, bulk_change_price_update_type, :first, :last, {checked: :percent} %>
+    </div>
+  </div>
+</div>
+<div class="form-group">
+  <div class="row">
+    <div class="col-lg-3 text-lg-right font-weight-bold">
+      <%= f.label :operation, Spree.t('bulk_change_price_form.operation') %>:
+    </div>
+    <div class="col-lg-9 checkbox-options">
+      <%= f.collection_radio_buttons :operation, bulk_change_price_operations, :first, :last, {checked: '+'} %>
+    </div>
+  </div>
+</div>
+<div class="form-group">
+  <div class="row">
+    <div class="col-lg-3 text-lg-right font-weight-bold">
+      <%= f.label :update_value, Spree.t('bulk_change_price_form.update_value') %>:
+    </div>
+    <div class="col-lg-9">
+      <%= f.text_field :update_value, class: 'form-control' %>
+    </div>
+  </div>
+</div>

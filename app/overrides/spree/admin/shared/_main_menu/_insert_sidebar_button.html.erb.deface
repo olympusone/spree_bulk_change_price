@@ -1,0 +1,10 @@
+<!-- insert_after "#sidebarStock" -->
+
+<ul class="nav nav-sidebar border-bottom" id="sidebarBulkChangePrice">
+    <li class="sidebar-menu-item d-block w-100 position-relative">
+      <a class="w-100 p-3 d-flex align-items-center icon-link with-tip" href="<%= spree.admin_bulk_change_price_path %>" data-original-title="" title="">
+            <%= svg_icon(name: 'products.svg', classes: "mr-2 icon", width: 16, height: 16) %>
+            <span class="text"><%= Spree.t("bulk_change_price") %></span>
+        </a>
+    </li>
+</ul>

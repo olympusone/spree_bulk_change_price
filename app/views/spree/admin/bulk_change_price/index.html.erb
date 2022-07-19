@@ -1,0 +1,87 @@
+<% content_for :page_title do %>
+  <%= Spree.t(:bulk_change_price) %>
+<% end %>
+<%= form_with url: '', method: :post, id: 'bulk_change_price_form' do |f| %>
+  <fieldset>
+    <%= render partial: 'form', locals: { f: f } %>
+    <div class="form-actions row" data-hook="buttons">
+      <div class="offset-lg-3 col-lg-9">
+        <button type="submit" class="btn btn-success">
+          <%= spree_icon 'save.svg' %>
+          <%= Spree.t('bulk_change_price_form.apply') %>
+        </button>
+        <span class="or"><%= Spree.t(:or) %></span>
+        <%= button_link_to Spree.t('bulk_change_price_form.reset'), '#', icon: 'cancel.svg', class: 'btn btn-outline-secondary reset_bulk_change_price_form' %>
+      </div>
+    </div>
+  </fieldset>
+<% end %>
+<script>
+  $('#bulk_change_price_form').submit(function (e) {
+    e.preventDefault();
+
+    const submitButton = $('.btn-success', '#bulk_change_price_form');
+
+    submitButton.attr('disabled', true);
+
+    $.ajax({
+      type: 'POST',
+      url: Spree.url('bulk_change_price/change').toString(),
+      data: $( this ).serialize()
+    }).done(function () {
+      alert('Prices is changed successfully!')
+    }).fail(function(){
+      alert('Prices change is failed!')
+    })
+
+    submitButton.attr('disabled', false);
+  })
+
+  $('#reset_bulk_change_price_form').click(function(e){
+    e.preventDefault();
+  })
+
+  $('input[name="products"]', '#bulk_change_price_form').change(function(e){
+    switch (this.value) {
+      case 'category':
+        $('.bulk_change_price_products').hide();
+        $('.bulk_change_price_taxons').show();
+        break;
+      case 'selected':
+        $('.bulk_change_price_taxons').hide();
+        $('.bulk_change_price_products').show();
+        break;
+      default:
+        $('.bulk_change_price_taxons').hide();
+        $('.bulk_change_price_products').hide();
+        break;
+    }
+  })
+</script>
+<style>
+  #bulk_change_price_form .form-group{
+    border-bottom: 1px solid #dee2e6 !important;
+  }
+
+  #bulk_change_price_form .checkbox-options{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  #bulk_change_price_form .checkbox-options input{
+    display: none;
+  }
+
+  #bulk_change_price_form .checkbox-options label{
+    background: #bdc3c7;
+    border-radius: 5px;
+    padding: 2px 10px;
+    color: #fff;
+    font-weight: bold;
+  }
+
+  #bulk_change_price_form .checkbox-options input[type="radio"]:checked+label{
+    background: #1abc9c;
+  }
+</style>

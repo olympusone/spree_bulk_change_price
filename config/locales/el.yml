@@ -1,1 +1,11 @@
 el:
+  spree:
+    bulk_change_price: Μαζική Αλλαγή Τιμών
+    bulk_change_price_form:
+      bulk_action: Ενέργεια
+      products: Προϊόντα
+      update_type: Τύπος Ενέργειας
+      operation: Διαδικασία
+      update_value: Τιμή
+      apply: Εφαρμογή
+      reset: Επαναφορά

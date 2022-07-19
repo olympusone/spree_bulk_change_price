@@ -1,5 +1,7 @@
 # SpreeBulkChangePrice
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/5ea156c66fd0b8442752/maintainability)](https://codeclimate.com/github/olympusone/spree_bulk_change_price/maintainability)
+
 Change product prices all at ones though single form.
 
 ## Installation
