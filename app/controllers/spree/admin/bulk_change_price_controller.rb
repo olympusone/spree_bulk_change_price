@@ -2,28 +2,34 @@ module Spree
   module Admin
     class BulkChangePriceController < Spree::Admin::BaseController
       def change
-        products = case params[:products]
+        begin
+          products = case params[:products]
                     when 'all'
-                      Spree::Variant.all
+                      Spree::Variant.includes(:prices, :default_price)
                     when 'category'
                       product_ids = Spree::Taxon.where(id: params[:taxon_ids]).map(&:product_ids)
-                      Spree::Variant.where(product_id: product_ids.flatten.uniq)
+                      Spree::Variant.where(product_id: product_ids.flatten.uniq).includes(:prices, :default_price)
                     when 'selected'
-                      Spree::Variant.where(product_id: params[:product_ids])
+                      Spree::Variant.where(product_id: params[:product_ids]).includes(:prices, :default_price)
                     end
 
-        if products
-          case params[:bulk_action]
-          when 'change_price'
-            change_price(products, params[:update_type], params[:operation], params[:update_value])
-          when 'add_special_price'
-            add_special_price(products, params[:update_type], params[:operation], params[:update_value])
-          when 'delete_special_price'
-            delete_special_price(products)
+          if products
+            case params[:bulk_action]
+            when 'change_price'
+              change_price(products, params[:update_type], params[:operation], params[:update_value])
+            when 'add_special_price'
+              add_special_price(products, params[:update_type], params[:operation], params[:update_value])
+            when 'change_special_price'
+              change_special_price(products, params[:update_type], params[:operation], params[:update_value])
+            when 'delete_special_price'
+              delete_special_price(products)
+            end
           end
-        end
 
-        render json: {ok: true}
+          render json: {ok: true, message: Spree.t('bulk_change_price_form.success')}
+        rescue => exception
+          render json: {ok: false, message: Spree.t('bulk_change_price_form.error')}
+        end
       end
 
       private
@@ -44,13 +50,21 @@ module Spree
 
       def add_special_price(products, update_type, operation, update_value)
         products.each do |p|
-          if p.compare_at_price.to_f > 0
-            # TODO
-          else
+          unless p.compare_at_price.to_f > 0
             compare_at_price = p.price.to_f
             price = calculate_price(p.price, update_type, operation, update_value)
 
             p.update price: price, compare_at_price: compare_at_price
+          end
+        end
+      end
+
+      def change_special_price(products, update_type, operation, update_value)
+        products.each do |p|
+          if p.compare_at_price.to_f > 0
+            price = calculate_price(p.compare_at_price.to_f, update_type, operation, update_value)
+
+            p.update price: price
           end
         end
       end
@@ -69,7 +83,7 @@ module Spree
 
           price.send(operation, result).to_f
         elsif update_type == 'fixed'
-          price.send(operation, result).to_f
+          price.send(operation, update_value.to_f).to_f
         end
       end
     end

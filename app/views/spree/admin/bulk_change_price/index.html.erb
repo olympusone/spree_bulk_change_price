@@ -11,52 +11,75 @@
           <%= Spree.t('bulk_change_price_form.apply') %>
         </button>
         <span class="or"><%= Spree.t(:or) %></span>
-        <%= button_link_to Spree.t('bulk_change_price_form.reset'), '#', icon: 'cancel.svg', class: 'btn btn-outline-secondary reset_bulk_change_price_form' %>
+        <%= button_link_to Spree.t('bulk_change_price_form.reset'), '#', icon: 'cancel.svg', class: 'btn btn-outline-secondary', id: 'reset_bulk_change_price_form' %>
       </div>
     </div>
   </fieldset>
 <% end %>
 <script>
-  $('#bulk_change_price_form').submit(function (e) {
-    e.preventDefault();
+  const bulkChangePriceForm = $('#bulk_change_price_form');
 
-    const submitButton = $('.btn-success', '#bulk_change_price_form');
+    bulkChangePriceForm.submit(function (e) {
+      e.preventDefault();
 
-    submitButton.attr('disabled', true);
+      const submitButton = $('.btn-success', bulkChangePriceForm);
 
-    $.ajax({
-      type: 'POST',
-      url: Spree.url('bulk_change_price/change').toString(),
-      data: $( this ).serialize()
-    }).done(function () {
-      alert('Prices is changed successfully!')
-    }).fail(function(){
-      alert('Prices change is failed!')
+      submitButton.attr('disabled', true);
+
+      $.ajax({
+        type: 'POST',
+        url: Spree.url('bulk_change_price/change').toString(),
+        data: $( this ).serialize()
+      }).done(function () {
+        alert('Prices is changed successfully!')
+      }).fail(function(){
+        alert('Prices change is failed!')
+      })
+
+      submitButton.attr('disabled', false);
     })
 
-    submitButton.attr('disabled', false);
-  })
+    $('#reset_bulk_change_price_form').click(function(e){
+      e.preventDefault();
 
-  $('#reset_bulk_change_price_form').click(function(e){
-    e.preventDefault();
-  })
+      bulkChangePriceForm.find('input[name="bulk_action"][value="change_price"]').prop("checked", true);
+      bulkChangePriceForm.find('input[name="products"][value="all"]').prop("checked", true);
+      bulkChangePriceForm.find('input[name="update_type"][value="percent"]').prop("checked", true);
+      bulkChangePriceForm.find('input[name="operation"][value="+"]').prop("checked", true);
 
-  $('input[name="products"]', '#bulk_change_price_form').change(function(e){
-    switch (this.value) {
-      case 'category':
-        $('.bulk_change_price_products').hide();
-        $('.bulk_change_price_taxons').show();
-        break;
-      case 'selected':
-        $('.bulk_change_price_taxons').hide();
-        $('.bulk_change_price_products').show();
-        break;
-      default:
-        $('.bulk_change_price_taxons').hide();
-        $('.bulk_change_price_products').hide();
-        break;
-    }
-  })
+      $('.bulk_change_price_taxons').hide();
+      $('select', '.bulk_change_price_taxons').val('').trigger('change');
+
+      $('.bulk_change_price_products').hide();
+      $('select', '.bulk_change_price_products').val('').trigger('change');
+
+      bulkChangePriceForm.find('input[name="update_value"]').val(null)
+    })
+
+    $('input[name="products"]', bulkChangePriceForm).change(function(e){
+      switch (this.value) {
+        case 'category':
+          $('.bulk_change_price_products').hide();
+          $('select', '.bulk_change_price_products').val('').trigger('change');
+
+          $('.bulk_change_price_taxons').show();
+          break;
+        case 'selected':
+          $('.bulk_change_price_taxons').hide()
+          $('select', '.bulk_change_price_taxons').val('').trigger('change');
+
+          $('.bulk_change_price_products').show();
+          break;
+        default:
+          $('.bulk_change_price_taxons').hide();
+          $('select', '.bulk_change_price_taxons').val('').trigger('change');
+
+          $('.bulk_change_price_products').hide();
+          $('select', '.bulk_change_price_products').val('').trigger('change');
+
+          break;
+      }
+    })
 </script>
 <style>
   #bulk_change_price_form .form-group{

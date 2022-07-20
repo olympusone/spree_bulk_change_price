@@ -8,4 +8,15 @@ el:
       operation: Διαδικασία
       update_value: Τιμή
       apply: Εφαρμογή
-      reset: Επαναφορά
+      reset: Καθαρισμός
+      change_price: Αλλαγή Τιμής
+      add_special_price: Προσθήκη Ειδικής Τιμής
+      change_special_price: Αλλαγή Ειδικής Τιμής
+      delete_special_price: Διαγραφή Ειδικής Τιμής
+      all: Όλα
+      category: Ανά Κατηγορία
+      selected: Επιλεγμένα Προϊόντα
+      percent: Ποσοστό
+      fixed: Προκαθορισμένο
+      success: Η αλλαγή τιμών πραγματοποιήθηκε επιτυχώς!
+      error: Η αλλαγή τιμών δεν πραγματοποιήθηκε επιτυχώς!
