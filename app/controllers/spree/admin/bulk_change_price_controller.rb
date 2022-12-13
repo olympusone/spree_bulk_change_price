@@ -80,9 +80,9 @@ module Spree
       def calculate_price(price, update_type, operation, update_value)
         if update_type == 'percent'
           if operation == '+'
-            price.to_f - (price.to_f / (1 - (update_value.to_f / 100.0)))
+            price.to_f / (1 - (update_value.to_f / 100.0))
           else
-            price.to_f * (update_value.to_f / 100)
+            price.to_f - (price.to_f * (update_value.to_f / 100))
           end
         elsif update_type == 'fixed'
           price.send(operation, update_value.to_f).to_f
