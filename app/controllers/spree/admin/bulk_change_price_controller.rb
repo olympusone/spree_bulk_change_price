@@ -40,10 +40,12 @@ module Spree
             compare_at_price = calculate_price(p.compare_at_price, update_type, operation, update_value)
 
             p.update price: price, compare_at_price: compare_at_price
+            p.product.touch
           else
             price = calculate_price(p.price, update_type, operation, update_value)
 
             p.update price: price > 0 ? price : 0
+            p.product.touch
           end
         end
       end
@@ -55,6 +57,7 @@ module Spree
             price = calculate_price(p.price, update_type, operation, update_value)
 
             p.update price: price, compare_at_price: compare_at_price
+            p.product.touch
           end
         end
       end
@@ -65,6 +68,7 @@ module Spree
             price = calculate_price(p.compare_at_price.to_f, update_type, operation, update_value)
 
             p.update price: price
+            p.product.touch
           end
         end
       end
@@ -73,6 +77,7 @@ module Spree
         products.each do |p|
           if p.compare_at_price.to_f > 0
             p.update price: p.compare_at_price, compare_at_price: nil
+            p.product.touch
           end
         end
       end
