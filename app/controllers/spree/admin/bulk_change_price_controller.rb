@@ -39,13 +39,11 @@ module Spree
             price = calculate_price(p.price, update_type, operation, update_value)
             compare_at_price = calculate_price(p.compare_at_price, update_type, operation, update_value)
 
-            p.update price: price, compare_at_price: compare_at_price
-            p.product.touch
+            p.update price: price, compare_at_price: compare_at_price, updated_at: Time.now
           else
             price = calculate_price(p.price, update_type, operation, update_value)
 
-            p.update price: price > 0 ? price : 0
-            p.product.touch
+            p.update price: price > 0 ? price : 0, updated_at: Time.now
           end
         end
       end
@@ -56,8 +54,7 @@ module Spree
             compare_at_price = p.price.to_f
             price = calculate_price(p.price, update_type, operation, update_value)
 
-            p.update price: price, compare_at_price: compare_at_price
-            p.product.touch
+            p.update price: price, compare_at_price: compare_at_price, updated_at: Time.now
           end
         end
       end
@@ -67,8 +64,7 @@ module Spree
           if p.compare_at_price.to_f > 0
             price = calculate_price(p.compare_at_price.to_f, update_type, operation, update_value)
 
-            p.update price: price
-            p.product.touch
+            p.update price: price, updated_at: Time.now
           end
         end
       end
@@ -76,8 +72,7 @@ module Spree
       def delete_special_price(products)
         products.each do |p|
           if p.compare_at_price.to_f > 0
-            p.update price: p.compare_at_price, compare_at_price: nil
-            p.product.touch
+            p.update price: p.compare_at_price, compare_at_price: nil, updated_at: Time.now
           end
         end
       end
