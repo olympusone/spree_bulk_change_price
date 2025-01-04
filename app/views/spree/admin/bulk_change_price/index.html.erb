@@ -80,6 +80,14 @@
           break;
       }
     })
+
+    $('input[name="update_type"]', bulkChangePriceForm).change(function(e){
+      if(this.value === 'percent'){
+        $('.round-method-form-group').show();
+      }else {
+        $('.round-method-form-group').hide();
+      }
+    })
 </script>
 <style>
   #bulk_change_price_form .form-group{

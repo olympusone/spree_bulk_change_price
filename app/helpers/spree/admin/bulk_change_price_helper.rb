@@ -27,9 +27,14 @@ module Spree::Admin::BulkChangePriceHelper
         [
             "+",
             "-",
-            # "x",
-            # "/",
-            # "="
+        ]
+    end
+
+    def bulk_change_price_round_method
+        [
+            ["round", Spree.t('bulk_change_price_form.round_method_options.round')],
+            ["floor", Spree.t('bulk_change_price_form.round_method_options.floor')],
+            ["ceil", Spree.t('bulk_change_price_form.round_method_options.ceil')],
         ]
     end
 end

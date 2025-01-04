@@ -1,3 +1,8 @@
 en:
   spree:
     bulk_change_price: Bulk Change Price
+    round_method: Round Method
+    round_method_options:
+      round: Round
+      ceil: Round Up
+      floor: Round Down

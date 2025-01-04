@@ -16,11 +16,11 @@ module Spree
           if products
             case params[:bulk_action]
             when 'change_price'
-              change_price(products, params[:update_type], params[:operation], params[:update_value])
+              change_price(products, params[:update_type], params[:round_method], params[:operation], params[:update_value])
             when 'add_special_price'
-              add_special_price(products, params[:update_type], params[:operation], params[:update_value])
+              add_special_price(products, params[:update_type], params[:round_method], params[:operation], params[:update_value])
             when 'change_special_price'
-              change_special_price(products, params[:update_type], params[:operation], params[:update_value])
+              change_special_price(products, params[:update_type], params[:round_method], params[:operation], params[:update_value])
             when 'delete_special_price'
               delete_special_price(products)
             end
@@ -33,36 +33,36 @@ module Spree
       end
 
       private
-      def change_price(products, update_type, operation, update_value)
+      def change_price(products, update_type, round_method, operation, update_value)
         products.each do |p|
           if p.compare_at_price.to_f > 0
-            price = calculate_price(p.price, update_type, operation, update_value)
+            price = calculate_price(p.price, update_type, round_method, operation, update_value)
             compare_at_price = calculate_price(p.compare_at_price, update_type, operation, update_value)
 
             p.update price: price, compare_at_price: compare_at_price, updated_at: Time.now
           else
-            price = calculate_price(p.price, update_type, operation, update_value)
+            price = calculate_price(p.price, update_type, round_method, operation, update_value)
 
             p.update price: price > 0 ? price : 0, updated_at: Time.now
           end
         end
       end
 
-      def add_special_price(products, update_type, operation, update_value)
+      def add_special_price(products, update_type, round_method, operation, update_value)
         products.each do |p|
           unless p.compare_at_price.to_f > 0
             compare_at_price = p.price.to_f
-            price = calculate_price(p.price, update_type, operation, update_value)
+            price = calculate_price(p.price, update_type, round_method, operation, update_value)
 
             p.update price: price, compare_at_price: compare_at_price, updated_at: Time.now
           end
         end
       end
 
-      def change_special_price(products, update_type, operation, update_value)
+      def change_special_price(products, update_type, round_method, operation, update_value)
         products.each do |p|
           if p.compare_at_price.to_f > 0
-            price = calculate_price(p.compare_at_price.to_f, update_type, operation, update_value)
+            price = calculate_price(p.compare_at_price.to_f, update_type, round_method, operation, update_value)
 
             p.update price: price, updated_at: Time.now
           end
@@ -77,12 +77,21 @@ module Spree
         end
       end
 
-      def calculate_price(price, update_type, operation, update_value)
+      def calculate_price(price, update_type, round_method, operation, update_value)
         if update_type == 'percent'
-          if operation == '+'
-            (price.to_f * (1 + update_value.to_f / 100)).round(2)
+          updated_price = if operation == '+'
+                            price.to_f * (1 + update_value.to_f / 100)
+                          else
+                            price.to_f - price.to_f * (update_value.to_f / 100)
+                          end
+
+          case round_method
+          when 'ceil'
+            updated_price.ceil
+          when 'floor'
+            updated_price.floor
           else
-            price.to_f - (price.to_f * (update_value.to_f / 100)).round(2)
+            updated_price.round(2)
           end
         elsif update_type == 'fixed'
           price.send(operation, update_value.to_f).to_f
